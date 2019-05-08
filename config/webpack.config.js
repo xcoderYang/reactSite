@@ -6,7 +6,7 @@ let entry = {};
 
 let files = fs.readdirSync('src/components');
 console.log(files);
-files.forEach(file => {
+files.forEach(file => { 
     if(file.endsWith('.js') || file.endsWith('.jsx')){
         entry[`components/${file}`] = path.resolve(`src/components/${file}`);
     }

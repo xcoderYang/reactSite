@@ -4,6 +4,7 @@ const HtmlWebPackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 let entry = {};
 
+// 组件打包
 let files = fs.readdirSync('src/components');
 console.log(files);
 files.forEach(file => { 
@@ -12,6 +13,7 @@ files.forEach(file => {
     }
 })
 
+// 第三方库打包
 files = fs.readdirSync('src/vendors');
 files.forEach(file => {
     if(file.endsWith('.js') || file.endsWith('.jsx')){
@@ -19,6 +21,7 @@ files.forEach(file => {
     }
 })
 
+// 页面打包
 let dirs = fs.readdirSync('src/pages');
 dirs.forEach(dir => {
     let pages = fs.readdirSync(`src/pages/${dir}`);
@@ -28,15 +31,9 @@ dirs.forEach(dir => {
         }
     })
 })
-console.log(entry);
-
-
-console.log(path.resolve('./index.js'));
-
-
 
 module.exports = {
-    entry: path.resolve('./index.js'),
+    entry: entry,
     output: {
         filename: '[name].[chunkhash].js',
         path: path.resolve('./dist')

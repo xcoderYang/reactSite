@@ -4,9 +4,15 @@ const HtmlWebPackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 let entry = {};
 
+let files;
+
 // 组件打包
-let files = fs.readdirSync('src/components');
-console.log(files);
+try{
+  files = fs.readdirSync('src/components');  
+}catch(e){
+  fs.mkdirSync('src/components');
+  files = fs.readdirSync('src/components');
+}
 files.forEach(file => { 
     if(file.endsWith('.js') || file.endsWith('.jsx')){
         entry[`components/${file}`] = path.resolve(`src/components/${file}`);
@@ -14,15 +20,27 @@ files.forEach(file => {
 })
 
 // 第三方库打包
-files = fs.readdirSync('src/vendors');
+try{
+  files = fs.readdirSync('src/vendors');
+}catch(e){
+  fs.mkdirSync('src/vendors');
+  files = fs.readdirSync('src/vendors');
+}
 files.forEach(file => {
     if(file.endsWith('.js') || file.endsWith('.jsx')){
         entry[`vendors/${file}`] = path.resolve(`src/vendors/${file}`);
     }
 })
 
-// 页面打包
 let dirs = fs.readdirSync('src/pages');
+
+// 页面打包
+try{
+  dirs = fs.readdirSync('src/pages');
+}catch(e){
+  fs.mkdirSync('src/pages');
+  dirs = fs.readdirSync('src/pages');
+}
 dirs.forEach(dir => {
     let pages = fs.readdirSync(`src/pages/${dir}`);
     pages.forEach( page =>{

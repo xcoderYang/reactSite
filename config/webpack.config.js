@@ -5,18 +5,23 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 let entry = {};
 
 let files;
+let dirs
 
 // 组件打包
+
 try{
-  files = fs.readdirSync('src/components');  
+    dirs = fs.readdirSync('src/components');
 }catch(e){
-  fs.mkdirSync('src/components');
-  files = fs.readdirSync('src/components');
+    fs.mkdirSync('src/components');
+    dirs = fs.readdirSync('src/components');
 }
-files.forEach(file => { 
-    if(file.endsWith('.js') || file.endsWith('.jsx')){
-        entry[`components/${file}`] = path.resolve(`src/components/${file}`);
-    }
+dirs.forEach(dir => {
+    let pages = fs.readdirSync(`src/components/${dir}`);
+    pages.forEach( page =>{
+        if(page.endsWith('.js') || page.endsWith('.jsx')){
+            entry[`components/${dir}/${page}`] = path.resolve(`src/components/${dir}/${page}`);
+        }
+    })
 })
 
 // 第三方库打包
@@ -31,8 +36,6 @@ files.forEach(file => {
         entry[`vendors/${file}`] = path.resolve(`src/vendors/${file}`);
     }
 })
-
-let dirs = fs.readdirSync('src/pages');
 
 // 页面打包
 try{
@@ -63,6 +66,12 @@ module.exports = {
                 loader: "babel-loader",
             },
             exclude: /node_modules/
+        },{
+            test: /\.css$/,
+            use: ["style-loader", "css-loader"]
+        },{
+            test: /(\.styl|\.stylus)$/,
+            use: ["style-loader", "css-loader", "stylus-loader"]
         }]
     },
     plugins: [

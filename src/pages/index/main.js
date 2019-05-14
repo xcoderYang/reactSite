@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from '../../components/app/app.js';
+import Login from '../../components/login/login.jsx';
 import './main.styl';
-ReactDOM.render(<App />, document.getElementById('root'));k
+import '../global/global.styl'
+ReactDOM.render(<Login />, document.getElementById('root'));

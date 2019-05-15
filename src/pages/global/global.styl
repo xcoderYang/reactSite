@@ -1,3 +1,5 @@
+primary-color = #40a9ff
+
 html, body
   height 100%
   width 100%
@@ -9,19 +11,22 @@ a, abbr, acronym, address, applet, article, aside, audio, b, big, blockquote, bo
   vertical-align baseline
   box-sizing border-box
   border 0
+  outline 0
 
 article, aside, details, figcaption, figure, footer, header, main, menu, nav, section, summary
   display block
 
 .txt-center
   text-align center
-.input-box
-  margin 10px
-  input
-    width 200px
-    height 25px
-    border-radius 5px
-    transition all .3s
-    border 1px solid #d9d9d9
-    &:hover
-      border-color #40a9ff
+.input-fill
+  display none
+.btn
+  cursor pointer
+  border-radius 5px
+.btn-normal
+  padding 10px 40px
+  &:active
+    padding 9px 39px
+.btn-primary
+  color white
+  background-color primary-color

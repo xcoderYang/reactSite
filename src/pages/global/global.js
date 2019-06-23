@@ -1,6 +1,7 @@
-Array.prototype.indexCreate = function(index){
+Array.prototype.indexCreate = function(index, hard){
     this.length = 0;
-    for(let i=0; i<index; i++){
-        this.push(i);
-    }   
+    let i = hard?1:0;
+    while(index--){
+        this.push(i++);
+    }  
 }

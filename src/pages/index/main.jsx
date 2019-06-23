@@ -4,62 +4,77 @@ import Login from '../../components/login/login.jsx';
 import '../global/global.js';
 import './main.styl';
 import '../global/global.styl'
+import { Input, Button, Row, Col } from 'antd';
 
-class MainPanel extends Component{
-    constructor(props){
-        super(props);
+function antdSelect(optionVal, mount){
+    const option = optionVal.map((val)=>{
+        return <Option key={val}>{val}</Option>
+    });
+    if(mount){
+        ReactDOM.render(
+            <div>
+                <Select>
+                    {option}
+                </Select>
+            </div>, 
+            mount
+        )
+    }else{
+        return <Select defaultValue={optionVal[0]}>
+                {option}
+            </Select>
+        
+    }
+}
+function antdInput(placeholder, mount){
+    if(mount){
+        ReactDOM.render(
+            <Row>
+                <Input placeholder = {placeholder} />
+                <Button type="primary">录入</Button>
+            </Row>,
+            mount
+        )
+    }else{
+        return (
+            <Row>
+                <Col span={8}><Input placeholder = {placeholder} /></Col>
+                <Col span={2}></Col>
+                <Col span={8}><Input placeholder = {placeholder} /></Col>
+                <Col span={2}></Col>
+                <Col span={4}><Button type="primary">录入</Button></Col>
+            </Row>
+        )
+
+    }
+}
+
+
+class PostNum extends Component{
+    constructor(prop){
+        super(prop);
         this.state = {
-            oneOfAnimal: '',
-            allAnimal: ['鼠', '牛', '虎', '兔', '龙', '蛇', '马', '羊', '猴', '鸡', '狗', '猪'],
-            typeOfAnimal:{
-                skyOfAnimal: {
-                    name: '天肖',
-                    value: []
+            numberList: [{
+                no: '1',
+                animal: 'mouse',
+                typeOfAnimal: {
+                    name: 'sky'
                 }
-            }
+            }]
         }
-        console.log(window);
-    }
-    trRender(index){
-        let tdMax = 12;
-        let tdItems = [];
-        tdItems.indexCreate(tdMax);
-        return (
-            <tr key={index}>
-                {tdItems.map((i)=>
-                    this.tdRender(i)
-                )}
-            </tr>
-        )
-    }
-    tdRender(index){
-        return (
-            <td key={index}>{index+1}号</td>
-        )
     }
     render(){
-        let trMax = 5;
-        let tdMax = 12;
-        let trItems = [];
-        let tdItems = [];
-        trItems.indexCreate(trMax);
-        tdItems.indexCreate(tdMax);
+        let allNum = [];
+        allNum.indexCreate(49, true);
+        console.log(allNum);
         return (
-            <table>
-                <tbody>
-                    {trItems.map((index)=>
-                        this.trRender(index)
-                    )}
-                </tbody>
-            </table>
+            <div className="box-center">
+                <div className="antd-input">
+                    {antdInput()}
+                </div>
+            </div>
         )
     }
 }
-let datas = {
-    isLogin: true
-}
 
-if(!datas.isLogin){
-    ReactDOM.render(<Login />, document.getElementById('root'));
-}
-ReactDOM.render(<MainPanel />, document.getElementById('root'));
+ReactDOM.render(<PostNum />, document.getElementById('root'));

@@ -78,6 +78,8 @@ module.exports = {
         new CleanWebpackPlugin(),
         new HtmlWebPackPlugin({
             template: './index.html',
+            // 这里chunks的名字，参照 entry里面的 key, 表示 html 只引入指定 js/jsx
+            chunks: ['pages/index/main.jsx']
         }),
     ],
 }

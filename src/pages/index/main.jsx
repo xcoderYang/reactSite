@@ -22,50 +22,18 @@ class PostNum extends Component{
             }],
             input: {
                 num: '',
-                value: ''
+                value: '',
+                time: ''
             },
             select: {
-                num: '',
-                value: ''
+                num: '1',
+                value: '',
+                time: ''
             },
             selected: []
         }
-    }
-    antdSelect(datas, mount){
-        if(mount){
-            ReactDOM.render(
-                <Row>
-                    <Select defaultValue={datas[0]}>
-                        {datas.map((data)=>{
-                            return <Option value={data}>{data}</Option>
-                        })}
-                    </Select>
-                    <Button type="primary">录入</Button>
-                </Row>,
-                mount
-            )
-        }else{
-            return (
-                <Row style={{margin: '30px 0'}}>
-                    <Col span={12}>
-                        <Select defaultValue={datas[0]} style={{width: '100%'}} >
-                            {datas.map((data)=>{
-                                return <Option key={data} value={data}>{data}</Option>
-                            })}
-                        </Select>
-                    </Col>
-                    <Col span={2}></Col>
-                    <Col span={4}>
-                        <Input placeholder="金额" value="" />
-                    </Col>
-                    <Col span={2} style={{lineHeight: '32px'}}>元</Col>
-                    <Col span={4}>
-                        <Button type="primary">录入</Button>
-                    </Col>
-                </Row>
-            )
-    
-        }
+        this.triggerDataChange = this.triggerDataChange.bind(this);
+        this.updateInput = this.updateInput.bind(this);
     }
     triggerDataChange(e){
         let name = e.target.name;
@@ -85,50 +53,71 @@ class PostNum extends Component{
             })
         }
     }
-    antdInput(placeholder, mount){
-        if(mount){
-            ReactDOM.render(
-                <Row>
-                    <Input placeholder = {placeholder} onChange={(e)=>{this.triggerDataChange(e)}} value={this.state.inputValue} />
-                    <Button onclick={(e)=>{this.numInput(e)}} type="primary">录入</Button>
-                </Row>,
-                mount
-            )
-        }else{
-            return (
-                <Row>
-                    <Col span={8}><Input name="input_num" placeholder = "号码" onChange={(e)=>{this.triggerDataChange(e)}} value={this.state.input.num} allowClear="true" /></Col>
-                    <Col span={2}></Col>
-                    <Col span={8}><Input name="input_value" placeholder = "金额" onChange={(e)=>{this.triggerDataChange(e)}} value={this.state.input.value} allowClear="true" /></Col>
-                    <Col span={2} style={{lineHeight: '32px'}}>元</Col>
-                    <Col span={4}><Button type="primary" onClick={(e)=>{this.numInput(e)}}>录入</Button></Col>
-                </Row>
-            )
-    
-        }
+    antdSelect(datas){
+        return (
+            <Row style={{margin: '30px auto', width: '60%'}}>
+                <Col span={12}>
+                    <Select defaultValue={datas[0]} style={{width: '100%'}} name="select_num" onChange={(e)=>{this.triggerDataChange({target:{name:'select_num', value: e}})}} value={this.state.select.num} >
+                        {datas.map((data)=>{
+                            return <Option key={data} value={data}>{data}</Option>
+                        })}
+                    </Select>
+                </Col>
+                <Col span={2}></Col>
+                <Col span={4}>
+                    <Input placeholder="金额" name="select_value" onChange={this.triggerDataChange} value={this.state.select.value} />
+                </Col>
+                <Col span={2} style={{lineHeight: '32px'}}>元</Col>
+                <Col span={4}>
+                    <Button type="primary" onClick={(e)=>{this.updateInput(e, 'select')}}>录入</Button>
+                </Col>
+            </Row>
+        )
     }
-    numInput(){
-        let No = this.state.input.num;
-        let val = this.state.input.value;
+    antdInput(){
+        return (
+            <Row style={{width: '60%', margin: 'auto'}}>
+                <Col span={8}><Input name="input_num" placeholder = "号码" onChange={this.triggerDataChange} value={this.state.input.num} allowClear={true} /></Col>
+                <Col span={2}></Col>
+                <Col span={8}><Input name="input_value" placeholder = "金额" onChange={this.triggerDataChange} value={this.state.input.value} allowClear={true} /></Col>
+                <Col span={2} style={{lineHeight: '32px'}}>元</Col>
+                <Col span={4}><Button type="primary" onClick={(e)=>{this.updateInput(e, 'input')}}>录入</Button></Col>
+            </Row>
+        )
     }
-    dataTran(key, col){
-        if(col){
-            
-        }
+    updateInput(e, type){
+        let No = this.state[type].num;
+        let val = this.state[type].value;
+        let now = new Date(),
+            hour = now.getHours()>10?now.getHours():'0'+now.getHours(),
+            min = now.getMinutes()>10?now.getMinutes():'0'+now.getMinutes(),
+            sec = now.getSeconds()>10?now.getSeconds():'0'+now.getSeconds();
+        this.setState((state)=>{
+            state.selected.push({
+                type: No,
+                money: val,
+                time: hour+':'+min+':'+sec
+            })
+            return state.selected.slice();
+        });
+        let panel = this.refs.dataPanel;
+        panel.scrollTop = panel.scrollHeight;
     }
     dataOutputPanel(dataOutput){
-        let oneDom = dataOutput.map((data)=>{
+        (dataOutput = dataOutput || this.state.selected);
+        let oneDom = dataOutput.map((data, index)=>{
             return (
-                <Row>
-                    <Col span={4}>报号:  {data.type}</Col>
-                    <Col span={4}>金额:  {data.money}</Col>
+                <Row key={index} className="one_data">
+                    <Col span={4}>时间:  {data.time}</Col>
+                    <Col span={6}>报号:  {data.type}</Col>
+                    <Col span={6}>金额:  {data.money}</Col>
                     <Col span={4}><Button type="primary">修改</Button></Col>
                     <Col span={4}><Button type="primary">取消</Button></Col>
                 </Row>
             )
         })
         return (
-            <div>
+            <div ref="dataPanel" className="data-panel">
                 {oneDom}
             </div>
         )
@@ -138,10 +127,8 @@ class PostNum extends Component{
         allNum.indexCreate(49, true);
         return (
                 <Layout className="box-center">
-                    <Content className="data-panel">
-                        {/*this.dataOutputPanel()*/}
-                    </Content>
-                    <Content className="antd-input">
+                    <Content style={{width: '100%',height: '100%'}}>
+                        {this.dataOutputPanel()}
                         {this.antdSelect(allNum)}
                         {this.antdInput()}
                     </Content>

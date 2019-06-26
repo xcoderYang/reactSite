@@ -30,10 +30,13 @@ class PostNum extends Component{
                 value: '',
                 time: ''
             },
-            selected: []
+            selected: [],
+            index: 0
         }
         this.triggerDataChange = this.triggerDataChange.bind(this);
         this.updateInput = this.updateInput.bind(this);
+        this.dataDelete = this.dataDelete.bind(this);
+        this.dataUpdate = this.dataUpdate.bind(this)
     }
     triggerDataChange(e){
         let name = e.target.name;
@@ -94,6 +97,7 @@ class PostNum extends Component{
             sec = now.getSeconds()>10?now.getSeconds():'0'+now.getSeconds();
         this.setState((state)=>{
             state.selected.push({
+                index: this.state.index++,
                 type: No,
                 money: val,
                 time: hour+':'+min+':'+sec
@@ -111,8 +115,8 @@ class PostNum extends Component{
                     <Col span={4}>时间:  {data.time}</Col>
                     <Col span={6}>报号:  {data.type}</Col>
                     <Col span={6}>金额:  {data.money}</Col>
-                    <Col span={4}><Button type="primary">修改</Button></Col>
-                    <Col span={4}><Button type="primary">取消</Button></Col>
+                    <Col span={4}><Button type="primary" onClick={(e)=>{this.dataUpdate(e, index)}}>修改</Button></Col>
+                    <Col span={4}><Button type="primary" onClick={(e)=>{this.dataDelete(e, index)}}>取消</Button></Col>
                 </Row>
             )
         })
@@ -121,6 +125,15 @@ class PostNum extends Component{
                 {oneDom}
             </div>
         )
+    }
+    dataDelete(e, index){
+        console.log(index);
+        this.setState((state)=>{
+            return state.selected.splice(index, 1).slice();
+        })
+    }
+    dataUpdate(e, index){
+        console.log(index);
     }
     render(){
         let allNum = [];

@@ -3,5 +3,6 @@ Array.prototype.indexCreate = function(index, hard){
     let i = hard?1:0;
     while(index--){
         this.push(i++);
-    }  
+    }
+    return this;
 }

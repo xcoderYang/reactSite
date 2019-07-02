@@ -18,7 +18,7 @@ class PostNum extends Component{
                 time: ''
             },
             select: {
-                num: '100',
+                num: '全数',
                 value: '',
                 time: ''
             },

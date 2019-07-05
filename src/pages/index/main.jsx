@@ -58,12 +58,23 @@ class PostNum extends Component{
                 '红大双': '|inter(红双,大数)',
                 '红小双': '|inter(红双,小数)'
             },
+            indexMap: {
+                '100': '全数',
+                '101': '双数',
+                '102': '绿色',
+                '103': '红色',
+                '104': '兰色',
+                '105': '大数',
+                '106': '小数',
+                '107': '单数',
+                '108': '绿双',
+                '109': '绿单'
+            },
             aniSimpleMap: ['鼠', '牛', '虎', '兔', '龙', '蛇', '马', '羊', '猴', '鸡', '狗', '猪'],
             mouseMap: ['12', '24', '36', '48'],
             aniAllMap: {
                 
-            }
-            
+            }  
         }
         this.triggerDataChange = this.triggerDataChange.bind(this);
         this.updateInput = this.updateInput.bind(this);
@@ -193,6 +204,7 @@ class PostNum extends Component{
     updateInput(e, type){
         let No = ''+this.state[type].num || '';
         let val = ''+this.state[type].value || '';
+        let storage = sessionStorage?sessionStorage:'';
         No = No.replace(/,/g, ', ');
         if(!No.trim() || !val.trim()){
             return;
@@ -210,12 +222,22 @@ class PostNum extends Component{
             })
             return state.selected.slice();
         });
+        // 清空输入框
         this.setState((state)=>{
-            
             state[type].num = type==='select'?[]:'';
             state[type].value = '';
             state[type].time = '';
         })
+        console.log()
+        let temp = storage.numList?JSON.parse(storage.numList):[];
+        temp.push({
+            index: this.state.index,
+            key: No,
+            money: val,
+            time: hour+':'+min+':'+sec
+        });
+
+        storage.numList = JSON.stringify(temp);
         let panel = this.refs.dataPanel;
         panel.scrollTop = panel.scrollHeight;
     }
@@ -262,6 +284,7 @@ class PostNum extends Component{
         let typeMap = this.state.typeMap;
         let indexMap = [];
         let dataSplit = [];
+        console.log(JSON.parse(JSON.stringify(datas)));
         datas = datas.map((data)=>{
             let keys = data.key.split(', ');
             keys = keys.map((key)=>{
@@ -274,7 +297,7 @@ class PostNum extends Component{
                 keys: keys
             }
         }) 
-        console.log(datas);
+        console.log(JSON.parse(JSON.stringify(datas)));
         datas.forEach((data)=>{
             data.keys.forEach((key)=>{
                 let nums = key.split(',');
@@ -287,9 +310,9 @@ class PostNum extends Component{
                 })
             })
         })
-        console.log(dataSplit);
-        dataSplit.forEach((data)=>{
-            let index = data.number;
+        console.log(JSON.parse(JSON.stringify(dataSplit)));
+        dataSplit.forEach((data, index)=>{
+            let key = data.number;
             indexMap[index] = indexMap[index] || {};
             indexMap[index].money = indexMap[index].money || 0;
             indexMap[index].from = indexMap[index].from || [];
@@ -329,9 +352,7 @@ class PostNum extends Component{
         let subSum = originDatas.reduce((prev, cur)=>{
             return +prev+cur.money;
         }, 0);
-
-        console.log(originDatas, sum);
-        console.log(datas, subSum);
+        console.log(sum, subSum);
     }
     render(){
         let allNum = [];

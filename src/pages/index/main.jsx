@@ -71,10 +71,25 @@ class PostNum extends Component{
                 '109': '绿单'
             },
             aniSimpleMap: ['鼠', '牛', '虎', '兔', '龙', '蛇', '马', '羊', '猴', '鸡', '狗', '猪'],
-            mouseMap: ['12', '24', '36', '48'],
-            aniAllMap: {
-                
-            }  
+            firstAni: '猪',
+            numMap: [
+                ['1', '13', '25', '37', '49'],
+                ['2', '14', '26', '38'],
+                ['3', '15', '27', '39'],
+                ['4', '16', '28', '40'],
+                ['5', '17', '29', '41'],
+                ['6', '18', '30', '42'],
+                ['7', '19', '31', '43'],
+                ['8', '20', '32', '44'],
+                ['9', '21', '33', '45'],
+                ['10', '22', '34', '46'],
+                ['11', '23', '35', '47'],
+                ['12', '24', '36', '48']
+            ],
+            aniAllMap: [/*{
+                key: '鼠',
+                value: ['12', '24', '36', '48']
+            }*/]
         }
         this.triggerDataChange = this.triggerDataChange.bind(this);
         this.updateInput = this.updateInput.bind(this);
@@ -89,19 +104,32 @@ class PostNum extends Component{
         let all = map['全数'].split(',');
         let aniAllMap = this.state.aniAllMap;
         let aniSimpleMap = this.state.aniSimpleMap;
+        let firstAni = this.state.firstAni;
+        let numMap = this.state.numMap;
 
+        // 红绿兰，大小，单双
         for(let key in map){
             let val = map[key];
             if(val.startsWith('|')){
                 map[key] = travel(val.slice(1));   
             }
         }
-        
-        aniAllMap[aniSimpleMap[0]] = this.state.mouseMap.join(',');
-        aniSimpleMap.shift();
-        aniSimpleMap.forEach((animal)=>{
-            
+
+        aniAllMap.push({
+            key: firstAni,
+            value: numMap[0]
         })
+        let firstIndex = aniSimpleMap.indexOf(firstAni);
+        console.log(firstIndex);
+        for(let i=1; i<12; i++){
+            aniAllMap.push({
+                key: aniSimpleMap[(firstIndex+i)%12],
+                value: numMap[12-i]
+            })
+        };
+        console.log(JSON.parse(JSON.stringify(aniAllMap)));
+
+        // 生肖 
         function travel(datas){
             let method = datas.slice(0, datas.indexOf('('))
             let options = datas.slice(datas.indexOf('(')+1, datas.lastIndexOf(')')).split(',');
@@ -145,9 +173,6 @@ class PostNum extends Component{
             function union(options){
                 return [];
             }
-        }
-        for(let key in this.state.typeMap){
-            console.log(key, this.state.typeMap[key]);
         }
     }
     triggerDataChange(e){

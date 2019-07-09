@@ -128,7 +128,9 @@ class PostNum extends Component{
             })
         };
         console.log(JSON.parse(JSON.stringify(aniAllMap)));
-
+        aniAllMap.forEach((one)=>{
+            this.state.typeMap[one.key] = one.value.join(',');
+        })
         // 生肖 
         function travel(datas){
             let method = datas.slice(0, datas.indexOf('('))
@@ -313,7 +315,7 @@ class PostNum extends Component{
         datas = datas.map((data)=>{
             let keys = data.key.split(', ');
             keys = keys.map((key)=>{
-                return +key>=100?typeMap[key]:key;
+                return typeMap[key]?typeMap[key]:key;
             });
 
             return {
@@ -338,12 +340,12 @@ class PostNum extends Component{
         console.log(JSON.parse(JSON.stringify(dataSplit)));
         dataSplit.forEach((data, index)=>{
             let key = data.number;
-            indexMap[index] = indexMap[index] || {};
-            indexMap[index].money = indexMap[index].money || 0;
-            indexMap[index].from = indexMap[index].from || [];
-            indexMap[index].money += +data.money;
-            indexMap[index].from.push(data.from);
-            indexMap[index].index = index;
+            indexMap[key] = indexMap[key] || {};
+            indexMap[key].money = indexMap[key].money || 0;
+            indexMap[key].from = indexMap[key].from || [];
+            indexMap[key].money += +data.money;
+            indexMap[key].from.push(data.from);
+            indexMap[key].index = key;
         })
         console.log(JSON.parse(JSON.stringify(indexMap)));
         return indexMap;
@@ -361,8 +363,11 @@ class PostNum extends Component{
          * time:  所报时间
          * 
          * */
+        console.log(JSON.parse(JSON.stringify(datas)));
         if(datas.length){
-            datas = this.dataTran(datas);
+            datas = this.dataTran(datas).filter((data)=>{
+                return data
+            });
         }
         console.log(JSON.parse(JSON.stringify(datas)));
         let fill_count = 49 - datas.length;
@@ -377,6 +382,7 @@ class PostNum extends Component{
         let subSum = originDatas.reduce((prev, cur)=>{
             return +prev+cur.money;
         }, 0);
+        console.log(JSON.parse(JSON.stringify(datas)));
         console.log(sum, subSum);
     }
     render(){
